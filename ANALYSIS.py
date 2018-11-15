@@ -1,4 +1,4 @@
-# python 3.7
+#! /usr/bin/env python3
 
 
 import psycopg2
@@ -25,11 +25,14 @@ q_Eror = """ select * from error_percentage where perc > 1 ; """
 
 
 def query_handler(sql_request):
-    connection = psycopg2.connect(database=DB)
-    curs = connection.cursor()
-    curs.execute(sql_request)
-    result = curs.fetchall()
-    connection.close()
+    try:
+        connection = psycopg2.connect(database=DB)
+        curs = connection.cursor()
+        curs.execute(sql_request)
+        result = curs.fetchall()
+        connection.close()
+    except psycopg2.DatabaseError as e:
+        print("connection failure ")
     return result
 
 
@@ -45,9 +48,10 @@ def print_resuluts(result, title):
     print("\n")
 
 
-result = query_handler(q_Art)
-print_resuluts(result, title_art)
-result = query_handler(q_Auth)
-print_resuluts(result, title_auth)
-result = query_handler(q_Eror)
-print_resuluts(result, title_error)
+if __name__ == '__main__':
+    result = query_handler(q_Art)
+    print_resuluts(result, title_art)
+    result = query_handler(q_Auth)
+    print_resuluts(result, title_auth)
+    result = query_handler(q_Eror)
+    print_resuluts(result, title_error)
